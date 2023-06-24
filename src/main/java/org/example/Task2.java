@@ -5,50 +5,45 @@ import java.util.*;
 
 public class Task2 {
     public static void main(String[] args) {
-        // Написать программу, которая найдёт и выведет повторяющиеся имена с количеством повторений. Отсортировать по убыванию популярности.
-        List<Workers> list = new ArrayList<>();
-        list = listCollection();
-        HashMap<String, Integer> mapWorkers = new HashMap<>();
-        for (int i = 0; i < list.size(); i++) {
-            if (!mapWorkers.containsKey(list.get(i).getName())){
-                mapWorkers.put(list.get(i).getName(), 1);
-            } else if (mapWorkers.containsKey(list.get(i).getName())) {
-                mapWorkers.put(list.get(i).getName(), mapWorkers.get(list.get(i).getName() + 1));
+        String[] workers = new String[]{"Иван Иванов", "Иван Петров", "Сергей Козлов", "Евгений Петров", "Сергей Васильев", "Иван Смирнов", "Андрей Петров"};
+        ArrayList<String> workersName = getName(workers);
+        Map<String, Integer> mapName = getMap(workersName);
+        System.out.println("Имена, отсортированные по убыванию популярности: ");
+        sortName(mapName);
+    }
+    public static ArrayList<String> getName(String[] list) {
+        ArrayList<String> listName = new ArrayList<>();
+        for (String el : list) {
+            String[] elList = el.split(" ");
+            listName.add(elList[0]);
+        }
+        return listName;
+    }
+
+    public static Map<String, Integer> getMap(ArrayList<String> name) {
+        Map<String, Integer> mapName = new HashMap<>();
+        for (int i = 0; i < name.size(); i++) {
+            int count = 1;
+            for (int j = i + 1; j < name.size(); j++) {
+                if (name.get(i).equals(name.get(j))) count += 1;
+            }
+            if (mapName.containsKey(name.get(i)) == false) mapName.put(name.get(i), count);
+        }
+        return mapName;
+    }
+
+    public static void sortName(Map<String, Integer> map) {
+        Map<Integer, ArrayList<String>> sortMap = new HashMap<>();
+        ArrayList<Integer> listCount = new ArrayList<>();
+        for (var item : map.entrySet()) {
+            if (listCount.contains(item.getValue()) == false) listCount.add(item.getValue());
+        }
+        listCount.sort(null);
+        for (int i = listCount.size() - 1; i > -1; i--) {
+            for (var item : map.entrySet()) {
+                if (listCount.get(i) == item.getValue())
+                    System.out.printf("%s : %d \n", item.getKey(), item.getValue());
             }
         }
-        sortByValue(mapWorkers);
-    }
-
-    private static void sortByValue(HashMap<String, Integer> mapWorkers) {
-        ArrayList<LinkedList> arrayList = new ArrayList<>();
-        int max = 0;
-        for (int i = 0; i < mapWorkers.size(); i++) {
-            for (Integer value : mapWorkers.values()) {
-                if (value>max){
-                    max = value;
-                }
-            }
-
-        }
-    }
-
-    private static Workers setCollection(){
-        Scanner scan = new Scanner(System.in);
-        String name = scan.nextLine();
-        String lastname = scan.nextLine();
-        Workers worker = new Workers(name, lastname);
-        scan.close();
-        return worker;
-    }
-
-    private static List<Workers> listCollection(){
-        List<Workers> list = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        int size = scanner.nextInt();
-        for (int i = 0; i < size; i++) {
-            System.out.println((i+1) + "-й сотрудник: ");
-            list.add(setCollection());
-        }
-        return list;
     }
 }
